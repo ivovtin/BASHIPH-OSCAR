@@ -1,0 +1,373 @@
+Your account has been created as:
+
+username = iovtin
+
+group = STCF
+
+password = I15:30:49n
+
+Home directory:  /home/iovtin
+
+Work directory：/ustcfs/STCFUser/iovtin
+
+
+You can log in to the STCF servers using the following SSH command: ssh iovtin@stcf01.ustc.edu.cn or ssh iovtin@stcf02.ustc.edu.cn
+
+Once logged in, please ensure you change your password immediately.
+
+
+To run examples in the OSCAR framework, follow these steps:
+
+First, source the external libraries by running the following command: source /software/STCF/OSCAR/ExternalLibs-gcc85/bashrc.sh
+
+Next, you will need an OSCAR offline package. You can copy one from my home directory: /home/bbq/offline. After copying, delete the build and install directories, rebuild the program, and then source the setup file: offline/install/setup.sh
+
+Alternatively, you can also download the offline package from GitLab at https://git.ustc.edu.cn/. If you choose this option, please create a GitLab account first. Once your account is set up, let me know, and I will invite you to join the OSCAR/offline project. 
+
+
+After completing the setup, you can explore some example scripts located in the following directory: $OFFLINETOP/Examples
+
+Here are a couple of useful scripts:
+
+$OFFLINETOP/Examples/RunCheck/sim_particleGun.py — for simulating all the STCF detectors.
+
+$OFFLINETOP/Examples/RunCheck/rec_Full.py — for digitization and reconstruction of all detectors.
+
+
+Please note that all algorithms in the offline framework are written in C/C++ and are executed by configuring Python scripts. This includes setting up the geometry (using DD4hep), event data model (based on Podio), Geant4-based simulation, digitization, and reconstruction et al.
+
+If you have any questions or run into any issues, feel free to contact me.
+
+=====================================================================================
+
+ls -ltr /ustcfs/STCFUser/iovtin
+
+slc7
+cd offline/
+cd Geometry/
+cd FullGeometry/
+vi compact/DTOF/03/detectorDTOF.xml
+cd compact/
+geoDisplay -c STCF.xml
+source ../../../install/setup.sh
+geoDisplay -c STCF.xml
+geoDisplay STCF.xml
+
+cd offline/
+./build_RelWithDebInfo.sh
+cd build/
+make install -j30
+
+gcc -v
+which root
+
+cp ../bbq/offline offline_new -r
+cd offline_new/
+rm build install -r
+slc7
+
+source ../bbq/offline/install/setup.sh
+cd offline/Geometry/FullGeometry/
+
+cd offline_new/
+./build_RelWithDebInfo.sh
+
+source install/setup.sh
+cd Geometry/
+cd FullGeometry/
+cd compact/
+checkOverlaps -h
+checkOverlaps -c STCF.xml -t 0.001
+geoDisplay STCF.xml
+vi STCF_BTOF.xml
+vi STCF.xml
+
+cd workdir/
+cp ~/offline_new/Examples/RunCheck/FullChain/sim_particleGun.py ./
+cp ~/offline_new/Examples/RunCheck/FullChain/vis.mac ./
+cp ~/offline_new/Examples/RunCheck/FullChain/run.mac ./
+./sim_particleGun.py
+
+slc7
+source ../bbq/offline/install/setup.sh
+geoDisplay offline/Geometry/FullGeometry/compact/STCF.xml
+geoDisplay ../bbq/offline/Geometry/FullGeometry/compact/STCF.xml
+
+cd offline_new/
+cd Geometry/
+cd FullGeometry/
+vi compact/DTOF/04/detectorDTOF.xml
+
+example comment in xml:
+  <detectors>
+    <!--<include ref="./MDI/&MDI_version;/supportMDI.xml"/>
+    <include ref="./ITK/&ITK_version;/detectorITK.xml"/>
+    <include ref="./MDC/&MDC_version;/detectorMDC.xml"/>
+    <include ref="./SC/&SC_version;/detectorSC.xml"/>-->
+    <include ref="./DTOF/&DTOF_version;/detectorDTOF.xml"/>
+    <include ref="./RICH/&RICH_version;/detectorRICH.xml"/>
+    <!--<include ref="./ECAL/&ECAL_version;/detectorECAL.xml"/>
+    <include ref="./MUD/&MUD_version;/detectorMUD.xml"/>-->
+
+
+/home/iovtin/offline
+source install/setup.sh
+
+
+cd offline_new/
+source install/setup.sh
+cd Geometry/FullGeometry/compact/
+geoDisplay STCF.xml
+
+================================================================================
+
+set up OSCAR offline:
+
+rm offline -rf
+cp ../bbq/offline ./ -r
+cd offline
+rm build install -rf
+./build_RelWithDebInfo.sh
+
+simulation events:
+
+source ~/offline/install/setup.sh
+cd /home/iovtin/workdir
+./sim_particleGun.py
+root Sim.root
+
+================================================================================
+Steps for create ASHIPH Geometry:
+
+1) create directory for barrel ASHIPH with version 01:
+
+/home/iovtin/offline/Geometry/FullGeometry/compact/BASHIPH/01
+
+2) create detectorBASHIPH.xml file
+
+ <lccdd>
+  <info> ... </info> Auxiliary detector model information
+  <includes> ... </includes> Section defining GDML files to be included
+  <define> ... </define> Dictionary of constant expressions and variables
+  <materials> ... </materials> Additional material definitions
+  <display> ... </display> Definition of visualization attributes
+  <detectors> ... </detectors> Section with sub-detector definitions
+  <readouts> ... </readouts> Section with readout structure definitions
+  <limits> ... </limits> Definition of limit sets for Geant4
+  <fields> ... </fields> Field definitions
+ </lccdd>
+
+
+3) create STCF_BASHIPH.xml in /home/iovtin/offline/Geometry/FullGeometry/compact/
+
+for test:
+
+geoDisplay STCF_BASHIPH.xml
+
+get error ! What is cause ?
+
+4) need describe properties, materials, display, surfaces, detectors
+
+5) create constructor in /home/iovtin/offline_new/Geometry/FullGeometry/src/detectorBASHIPH_01.cpp
+
+need comment rec modules -> //rec::BASHIPHGeoData *BASHIPHGeoData = new rec::BASHIPHGeoData;
+
+for rebuilding: rm -r build install
+                ./build_RelWithDebInfo.sh
+
+source install/setup.sh
+
+Now I can draw geometry for ASHIPH 
+
+6) Go to gitlab
+
+create project on git: git push --set-upstream https://git.ustc.edu.cn/IvanOvtin/offline.git main
+
+   https://docs.gitlab.com/topics/git/project/
+
+down is baseline
+
+connect to project from group:
+
+git clone https://git.ustc.edu.cn/oscar1/offline.git
+
+To list all the branches in your local repository, use the following command:
+
+git branch
+
+To list all the branches that are present in the remote repository, use the following command:
+
+git branch -r
+
+connect to my branch:
+
+git checkout BASHIPH
+
+7) checkOverlaps -c Geometry/FullGeometry/compact/STCF_BASHIPH.xml -t 0.001
+
+Check overlaps:      [==========]    6 [100.00 %]           00:00
+Info in <TGeoNodeMatrix::CheckOverlaps>: Number of illegal overlaps/extrusions : 1
+
+INFO: +++========================================================================================================================
+INFO: +++ Printing overlaps of geometry:
+INFO: +++ ../Geometry/FullGeometry/compact/STCF_BASHIPH.xml
+INFO: +++========================================================================================================================
+
+=== Overlaps for default ===
+ = Overlap ov00000: BASHIPHLayer1/BASHIPHTEFLON_0 overlapping BASHIPHLayer1/BASHIPHradiator_0 ovlp=1.25
+INFO: +++ Execution finished...
+Singularity>
+
+
+==============================================================================================================================
+
+/ustcfs/STCFUser/bbq/STCF/OSCAR/work/sim_particleGun_BTOF.py
+
+./sim_particleGun.py
+root Sim.root
+
+#g4svc.property("VisMac").set("vis.mac")   - need uncomment
+/control/execute run.mac
+/run/beamOn 10
+
+
+/gps/ene/type User – Declaring a user defined energy distribution. 
+/gps/hist/type energy – Declaring an energy histogram in a similar manner to the angular 
+distribution. 
+/gps/hist/point – Adding a value of energy and its associated probability, here energy is in 
+Geant4 default units of MeV and the probabilities are normailsed. 
+/run/beamOn – The number of muons which are to be simulated. 
+
+/vis/drawVolume BASHIPHCounter_20
+
+1) Set number of events inside sim_particleGun.py  - task.setEvtMax(5) 
+
+
+
+/home/iovtin/offline/CommonSvc/BTOFSvc/BTOFGeoSvc/
+
+/home/iovtin/offline/DataModel/src/BTOF*  
+
+/home/iovtin/offline/Digitization/BTOFDigitization/
+
+
+/home/iovtin/offline/Documentation/sphinx/source/quickstart/
+
+/home/iovtin/offline/Documentation/sphinx/source/quickstart/env.md - info set up OSCAR
+
+BTOFGeoData
+
+/home/iovtin/offline/Documentation/sphinx/source/datamodel/datamodel.md 
+
+The geometry model is initialized by the GeometrySvc and constructed in Geant4.
+
+-----------
+CMake Error at CommonSvc/BASHIPHSvc/CMakeLists.txt:7 (add_subdirectory):
+  The source directory
+
+    /home/iovtin/offline/CommonSvc/BASHIPHSvc/BASHIPHGeoSvc
+
+  does not contain a CMakeLists.txt file.
+-----------
+
+Event data model - based on Podio
+DataModel - AUTOMATICALLY GENERATED FILEs
+
+/home/iovtin/offline/DataModel
+vi datalayout.yaml    - BASHIPHBarHit description added
+source make.sh
+
+
+Performance/DTOFSummaryWriter/include/DTOFSummaryWriter.h
+Performance/DTOFSummaryWriter/src/DTOFSummaryWriter.cc
+
+Simulation/FullSim/src/BTOFAnaMgr.cc
+Simulation/FullSim/include/BTOFAnaMgr.h
+
+/home/iovtin/offline/CommonSvc/BASHIPHSvc/BASHIPHGeoSvc/BASHIPHGeoSvc/BASHIPHGeoSvc.h:27:15: error: ‘BASHIPHGeoData’ in namespace ‘dd4hep::rec’ does not name a type
+  dd4hep::rec::BASHIPHGeoData *ReadBASHIPHGeoData(std::string &fname);
+
+Reconstruction/RecGeo/RecGeoData/RecGeoData/RecGeoData.h
+
+---------------------------------------------------------------------------------------------
+
+OSCAR manages detector simulation with a Task，which consists of Algorithms and services:
+- A dedicated algorithm (DetSimAlg) for all sub-detectors simulation
+- A dedicated service (G4Svc) for launching Geant4 within OSCAR
+- A user-end service(DetSimFactory) to set up and organize all the Geant4 related classes.
+- A user-end service(AnalysisElement) for access to G4Event to create EDM
+
+
+- AnalysisElement
+A DetSimAlg can contains many different AnaMgrs inherit from AnalysisElement. These AnaMgrs implement different functions.
+For example, GeneratorMgr - for generating event, GeoAnaMgr - for storing geometry in root file, and MDCAnaMgr - for getting information from MDC detector simutation. Other sub-detectors
+can also have their own AnaMgr to get simulation truth information.
+
+
+The work flow of the FullSim is :
+
+1. The geometry model is initialized by the GeometrySvc and constructed in
+Geant4. Note that both xml and gdml format of the geometry compact file are
+supported for geometry construction. Sometimes one wants to use the
+DetectorConstruction.hh in geant4 to initialize a detector, he/she can choose
+whether to use the GeometrySvc to initialize the detector by a property
+GeometrySvcEnable:
+```python
+import GeometrySvc
+myxmlsvc = task.createSvc("GeometrySvc")
+myxmlsvc.property("GeoCompactFileName").set("Geometry/compact/STCF.xml")
+```
+2. Detector response is simulated in the Geant4-based Detector simulation module.
+3. The GeoAnaMgr obtain the detector geometry from the memory and
+save it into a root file as TGeo format . the DetAnaMgr obtain the MC events from
+the memory and save them into a root file in TTree .
+
+
+## GeometrySvc
+GeometrySvc is a user-end service for parsing detector geometry compact
+description file and construct detector model in memory with all the necessary
+data stored in a detector geometry compact file. When users want to do some
+simulation work in an Oscar detector simulation algorithm package，the first thing
+he or she has to do is initial and construct a detector model from the detector
+compact description file(such as a xml or gdml file)by using the
+GeometrySvc. The picture shows how to use it ,you need to modify the run.py
+script.
+1. Create and import the GeometrySvc.
+2. Set the GeometrySvc enable to true.
+3. Set the GeoCmpactFileName according to the rule in the example.
+
+
+/////////////////////////////////
+Simulation/FullSim/src/BASHIPHAnaMgr.cc  - optical photons spread
+
+Geometry/FullGeometry/src/detectorBASHIPH_01.cpp
+Geometry/FullGeometry/compact/BASHIPH/01/detectorBASHIPH.xml
+Simulation/FullSim/CMakeLists.txt
+Simulation/FullSim/src/BASHIPHAnaMgr.cc
+Simulation/FullSim/src/MCTruthWriter.cc
+Simulation/FullSim/include/MCTruthWriter.h
+Simulation/FullSim/include/BASHIPHAnaMgr.h
+Simulation/FastSim/src/FastSim.cc
+CommonSvc/CMakeLists.txt
+CommonSvc/BASHIPHSvc
+DataModel/
+------------------------------------------------------------------------------
+
+~/../bbq/ustcfs3/RootGen/
+
+
+[iovtin@stcf01 results]$ hep_q -u iovtin
+
+JOBID           OWNER           SUBMITTED       RUN_TIME        ST PRI SIZE CMD
+
+0 jobs; 0 completed, 0 removed, 0 idle, 0 running, 0 held, 0 suspended
+[iovtin@stcf01 results]$
+
+
+hep_rm 3745232 3745233.0
+
+hep_rm -a
+
+geoConverter -input Geometry/FullGeometry/compact/STCF_BASHIPH.xml -compact2tgeo -output test_bashiph_geoConverter.root
+
+materialScan Geometry/FullGeometry/compact/STCF_BASHIPH.xml 0 83 0 0 100 0

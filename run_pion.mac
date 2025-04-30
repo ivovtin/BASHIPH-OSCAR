@@ -1,0 +1,39 @@
+/gps/source/clear
+
+/gps/source/add 1 #idensity for particle source, you can add diffrent particles in one source
+/gps/particle pi- #common particles: e+, e-, mu+, mu-, pi+, pi-, kaon+, kaon-, proton, anti_proton, gamma, opticalphoton 
+
+/gps/pos/type Point
+#/gps/pos/centre 0. 0. 0. cm #vertex position
+/gps/pos/centre 0. 0. 112. cm #vertex position
+
+/gps/ang/type iso #iso for isotropic, cos for cosine-law
+#/gps/ang/mintheta 22 deg # min angle, reversed in simulation:180-theta
+#/gps/ang/maxtheta 90 deg # max angle to the beam (z azis)
+/gps/ang/mintheta 90 deg # min angle, reversed in simulation:180-theta
+/gps/ang/maxtheta 90 deg # max angle to the beam (z azis)
+#/gps/ang/minphi 0 deg #min azimuthal angle
+#/gps/ang/maxphi 360 deg #max azimuthal angle
+#/gps/ang/minphi 180 deg #min azimuthal angle
+#/gps/ang/maxphi 180 deg #max azimuthal angle
+/gps/ang/minphi 182 deg #min azimuthal angle
+/gps/ang/maxphi 182 deg #max azimuthal angle
+
+
+
+#/gps/ene/type User #User for hist, other options: Mono, Lin, Pow, Exp, Gauss.....
+#/gps/ene/emspec false #false for momentum, true for kinetic energy
+#/gps/hist/type energy #define a hist for energy spectrum using points (energy in MeV, weight)
+#/gps/hist/point 1500 0. # cannot delete this line
+#/gps/hist/point 1500 1.
+
+/gps/ene/type  Lin
+/gps/ene/min 200. MeV
+/gps/ene/max 3000 MeV
+/gps/ene/gradient 0.
+/gps/ene/intercept 1.
+
+/tracking/verbose 0
+
+/gps/source/list
+
